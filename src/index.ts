@@ -13,11 +13,18 @@
 
 export interface Env {
 	AI: Ai;
+	KV: KVNamespace;
 }
 
 interface Message {
 	role: 'user' | 'assistant' | 'system';
 	content: string;
+}
+
+interface UserInfo {
+	email: string;
+	name: string;
+	checkbox: boolean;
 }
 
 export default {
@@ -31,6 +38,13 @@ export default {
 
 		if (request.method !== 'POST') {
 			return new Response('Method Not Allowed', { status: 405 });
+		}
+
+		const url = new URL(request.url);
+		if (url.pathname === '/submit') {
+			const formData = await request.json() as UserInfo;
+			await env.KV.put(formData.email, JSON.stringify(formData));
+			return new Response('Data saved successfully', { headers: corsHeaders });
 		}
 
 		console.log('Request received', request);
