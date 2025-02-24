@@ -3,6 +3,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hack-the-safe-api",
   "main": "src/index.ts",
+	"account_id": "d6850012d250c1600028b55d1d879b16",
   "compatibility_date": "2025-01-21",
   "observability": {
     "enabled": true
@@ -11,10 +12,10 @@
   "ai": {
     "binding": "AI"
   },
-	"kv_namespaces": [
+  "kv_namespaces": [
     {
-      "binding": "KV",
-      "id": "0257e67ceebf4835bfbe4aa015c27965"
+      "binding": "hack_the_safe",
+      "id": "c8e5540d3d0448feafc7c964e0c018ca"
     }
   ]
  }
