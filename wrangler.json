@@ -14,7 +14,7 @@
   },
   "kv_namespaces": [
     {
-      "binding": "hack_the_safe",
+      "binding": "KV",
       "id": "c8e5540d3d0448feafc7c964e0c018ca"
     }
   ]
