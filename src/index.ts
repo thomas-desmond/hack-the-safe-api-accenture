@@ -13,7 +13,6 @@
 
 export interface Env {
 	AI: Ai;
-	KV: KVNamespace;
 	DB: D1Database;
 }
 
