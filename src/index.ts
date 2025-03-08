@@ -14,6 +14,7 @@
 export interface Env {
 	AI: Ai;
 	KV: KVNamespace;
+	DB: D1Database;
 }
 
 interface Message {
@@ -43,7 +44,14 @@ export default {
 		const url = new URL(request.url);
 		if (url.pathname === '/submit') {
 			const formData = (await request.json()) as UserInfo;
-			await env.KV.put(formData.email, JSON.stringify(formData));
+			const query = `
+				INSERT INTO users (email, name, checkbox)
+				VALUES (?, ?, ?)
+				ON CONFLICT(email) DO UPDATE SET
+					name = excluded.name,
+					checkbox = excluded.checkbox;
+			`;
+			await env.DB.prepare(query).bind(formData.email, formData.name, formData.checkbox).run();
 			return new Response('Data saved successfully', { headers: corsHeaders });
 		}
 
@@ -56,9 +64,12 @@ export default {
 			};
 			const correct = correctCodes[level] === code;
 			if (correct && level === 3) {
-				const userInfo = JSON.parse(await env.KV.get(email) || '{}');
-				userInfo.correctLevel3 = true;
-				await env.KV.put(email, JSON.stringify(userInfo));
+				const query = `
+					UPDATE users
+					SET correctLevel3 = true
+					WHERE email = ?;
+				`;
+				await env.DB.prepare(query).bind(email).run();
 			}
 			return new Response(JSON.stringify({ correct }), { headers: corsHeaders });
 		}

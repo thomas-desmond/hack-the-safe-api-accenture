@@ -17,5 +17,13 @@
       "binding": "KV",
       "id": "c8e5540d3d0448feafc7c964e0c018ca"
     }
-  ]
+  ],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "hack-the-safe",
+			"database_id": "c66b06e1-b291-47a9-a295-ff00ebf393a9"
+		}
+
+	]
  }

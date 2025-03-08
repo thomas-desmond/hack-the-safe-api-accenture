@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email text NOT NULL UNIQUE,
+    full_name text NOT NULL,
+    agree_to_contact BOOLEAN NOT NULL DEFAULT FALSE,
+    did_hack_safe BOOLEAN NOT NULL DEFAULT FALSE
+);
