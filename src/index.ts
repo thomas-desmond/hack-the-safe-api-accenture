@@ -74,12 +74,7 @@ export default {
 			return new Response(JSON.stringify({ correct }), { headers: corsHeaders });
 		}
 
-		console.log('Request received', request);
-
 		const { messages, level } = (await request.json()) as { messages: Message[]; level: number };
-
-		console.log('messages', messages);
-		console.log('level', level);
 
 		let systemMessage;
 		switch (level) {
