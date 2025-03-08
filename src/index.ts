@@ -25,7 +25,7 @@ interface Message {
 interface UserInfo {
 	email: string;
 	name: string;
-	checkbox: boolean;
+	agreeToContact: boolean;
 }
 
 export default {
@@ -44,14 +44,15 @@ export default {
 		const url = new URL(request.url);
 		if (url.pathname === '/submit') {
 			const formData = (await request.json()) as UserInfo;
+			console.log('formData', formData);
 			const query = `
-				INSERT INTO users (email, name, checkbox)
+				INSERT INTO users (email, full_name, agree_to_contact)
 				VALUES (?, ?, ?)
 				ON CONFLICT(email) DO UPDATE SET
-					name = excluded.name,
-					checkbox = excluded.checkbox;
+					full_name = excluded.full_name,
+					agree_to_contact = excluded.agree_to_contact;
 			`;
-			await env.DB.prepare(query).bind(formData.email, formData.name, formData.checkbox).run();
+			await env.DB.prepare(query).bind(formData.email, formData.name, formData.agreeToContact).run();
 			return new Response('Data saved successfully', { headers: corsHeaders });
 		}
 
