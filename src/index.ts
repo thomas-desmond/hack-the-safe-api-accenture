@@ -67,7 +67,7 @@ export default {
 			if (correct && level === 3) {
 				const query = `
 					UPDATE users
-					SET correctLevel3 = true
+					SET did_hack_safe = true
 					WHERE email = ?;
 				`;
 				await env.DB.prepare(query).bind(email).run();
