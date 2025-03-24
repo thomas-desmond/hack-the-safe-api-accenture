@@ -1,22 +1,21 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "hack-the-safe-api",
-  "main": "src/index.ts",
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "hack-the-safe-api",
+	"main": "src/index.ts",
 	"account_id": "4ada3fc2e7dcf09a09749af670622778",
-  "compatibility_date": "2025-01-21",
-  "observability": {
-    "enabled": true
-  },
+	"compatibility_date": "2025-01-21",
+	"observability": {
+		"enabled": true
+	},
 	"placement": { "mode": "smart" },
-  "ai": {
-    "binding": "AI"
-  },
+	"ai": {
+		"binding": "AI"
+	},
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "hack-the-safe",
-			"database_id": "c66b06e1-b291-47a9-a295-ff00ebf393a9"
+			"database_id": "58a28335-14f4-41a3-a0fe-4f9bd041ad23"
 		}
-
 	]
- }
+}
