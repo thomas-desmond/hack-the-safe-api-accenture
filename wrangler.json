@@ -14,7 +14,7 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "hack-the-safe",
+			"database_name": "hack-the-safe-demo-db",
 			"database_id": "58a28335-14f4-41a3-a0fe-4f9bd041ad23"
 		}
 	]
