@@ -24,11 +24,17 @@ export default {
 			});
 		}
 
-		if (request.method !== 'POST') {
+		const url = new URL(request.url);
+		const isAdminStats = url.pathname === '/admin/stats';
+
+		if (!isAdminStats && request.method !== 'POST') {
 			return new Response('Method Not Allowed', { status: 405 });
 		}
 
-		const url = new URL(request.url);
+		if (isAdminStats && request.method !== 'GET') {
+			return new Response('Method Not Allowed', { status: 405 });
+		}
+
 		switch (url.pathname) {
 			case '/submit':
 				return handleSubmit(request, env, corsHeaders);
