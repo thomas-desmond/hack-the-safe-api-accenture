@@ -37,7 +37,7 @@ export class DatabaseService {
 		return result as { email: string; full_name: string } | null;
 	}
 
-	async getStats(): Promise<{ totalUsers: number; totalHackers: number }> {
+	async getStats(): Promise<{ totalUsers: number; successfulHacks: number }> {
 		const totalUsersQuery = `
 			SELECT COUNT(*) as count
 			FROM users;
@@ -55,7 +55,7 @@ export class DatabaseService {
 
 		return {
 			totalUsers: (totalUsersResult as { count: number }).count,
-			totalHackers: (totalHackersResult as { count: number }).count
+			successfulHacks: (totalHackersResult as { count: number }).count
 		};
 	}
 }
