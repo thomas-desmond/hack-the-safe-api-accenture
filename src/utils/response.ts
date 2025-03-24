@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../types';
+import type { ApiResponse, Env } from '../types';
 
 export function createResponse<T>(data: T, status = 200, headers: HeadersInit = {}): Response {
 	return new Response(
@@ -39,4 +39,9 @@ export function handleOptionsRequest(request: Request, corsHeaders: HeadersInit)
 		return true;
 	}
 	return false;
+}
+
+export function validateAdminApiKey(request: Request, env: Env): boolean {
+	const apiKey = request.headers.get('X-Admin-API-Key');
+	return apiKey === env.ADMIN_API_KEY;
 }

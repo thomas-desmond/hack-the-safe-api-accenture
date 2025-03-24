@@ -13,7 +13,7 @@
 
 import type { Env } from './types';
 import { handleSubmit, handleCheckCode, handleAIChat, handleSelectWinner, handleGetStats } from './handlers';
-import { getCorsHeaders, handleOptionsRequest } from './utils/response';
+import { getCorsHeaders, handleOptionsRequest, validateAdminApiKey } from './utils/response';
 
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
@@ -25,7 +25,12 @@ export default {
 		}
 
 		const url = new URL(request.url);
+		const isAdminEndpoint = url.pathname.startsWith('/admin');
 		const isAdminStats = url.pathname === '/admin/stats';
+
+		if (isAdminEndpoint && !validateAdminApiKey(request, env)) {
+			return new Response('Unauthorized', { status: 401, headers: corsHeaders });
+		}
 
 		if (!isAdminStats && request.method !== 'POST') {
 			return new Response('Method Not Allowed', { status: 405 });
