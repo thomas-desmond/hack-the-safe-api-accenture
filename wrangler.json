@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hack-the-safe-api",
   "main": "src/index.ts",
-	"account_id": "d6850012d250c1600028b55d1d879b16",
+	"account_id": "4ada3fc2e7dcf09a09749af670622778",
   "compatibility_date": "2025-01-21",
   "observability": {
     "enabled": true
