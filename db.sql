@@ -5,5 +5,7 @@ CREATE TABLE users (
     email text NOT NULL UNIQUE,
     full_name text NOT NULL,
     agree_to_contact BOOLEAN NOT NULL DEFAULT FALSE,
-    did_hack_safe BOOLEAN NOT NULL DEFAULT FALSE
+    did_hack_safe BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    hacked_at TIMESTAMP
 );
