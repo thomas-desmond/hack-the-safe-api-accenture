@@ -97,3 +97,62 @@ export async function handleGetSecretCodes(request: Request, env: Env, corsHeade
 		return createErrorResponse(`Failed to get secret codes: ${error instanceof Error ? error.message : 'Unknown error'}`, 500, corsHeaders);
 	}
 }
+
+export async function handleExportDatabase(request: Request, env: Env, corsHeaders: HeadersInit): Promise<Response> {
+	try {
+		const headers = ['id', 'email', 'full_name', 'agree_to_contact', 'did_hack_safe', 'created_at', 'hacked_at'];
+
+		// Create a TransformStream for streaming the CSV data
+		const { readable, writable } = new TransformStream();
+		const writer = writable.getWriter();
+
+		// Write CSV headers
+		const encoder = new TextEncoder();
+		await writer.write(encoder.encode(headers.join(',') + '\n'));
+
+		const BATCH_SIZE = 1000;
+		let offset = 0;
+		let hasMore = true;
+
+		// Process in batches
+		while (hasMore) {
+			const query = `
+				SELECT *
+				FROM users
+				ORDER BY created_at
+				LIMIT ? OFFSET ?;
+			`;
+			const results = await env.DB.prepare(query)
+				.bind(BATCH_SIZE, offset)
+				.all();
+
+			if (results.results.length === 0) {
+				hasMore = false;
+			} else {
+				const csvRows = results.results.map(row =>
+					headers.map(header =>
+						JSON.stringify(row[header] ?? '')
+					).join(',')
+				).join('\n');
+
+				await writer.write(encoder.encode(csvRows + '\n'));
+				offset += results.results.length;
+			}
+		}
+
+		writer.close();
+
+		// Return as a streamable CSV file
+		return new Response(readable, {
+			headers: {
+				...corsHeaders,
+				'Content-Type': 'text/csv',
+				'Content-Disposition': 'attachment; filename="hack-the-safe-users.csv"',
+				'Transfer-Encoding': 'chunked'
+			}
+		});
+	} catch (error) {
+		console.error('Export database error:', error);
+		return createErrorResponse(`Failed to export database: ${error instanceof Error ? error.message : 'Unknown error'}`, 500, corsHeaders);
+	}
+}

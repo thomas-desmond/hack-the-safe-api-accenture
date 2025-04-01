@@ -12,7 +12,7 @@
  */
 
 import type { Env } from './types';
-import { handleSubmit, handleCheckCode, handleAIChat, handleSelectWinner, handleGetStats, handleGetSecretCodes } from './handlers';
+import { handleSubmit, handleCheckCode, handleAIChat, handleSelectWinner, handleGetStats, handleGetSecretCodes, handleExportDatabase } from './handlers';
 import { getCorsHeaders, handleOptionsRequest, validateAdminApiKey } from './utils/response';
 
 export default {
@@ -42,6 +42,8 @@ export default {
 				return handleGetStats(request, env, corsHeaders);
 			case '/admin/secret-codes':
 				return handleGetSecretCodes(request, env, corsHeaders);
+			case '/admin/export-database':
+				return handleExportDatabase(request, env, corsHeaders);
 			default:
 				return handleAIChat(request, env, corsHeaders);
 		}
