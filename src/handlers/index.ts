@@ -105,44 +105,51 @@ export async function handleExportDatabase(request: Request, env: Env, corsHeade
 		// Create a TransformStream for streaming the CSV data
 		const { readable, writable } = new TransformStream();
 		const writer = writable.getWriter();
-
-		// Write CSV headers
 		const encoder = new TextEncoder();
-		await writer.write(encoder.encode(headers.join(',') + '\n'));
 
-		const BATCH_SIZE = 1000;
-		let offset = 0;
-		let hasMore = true;
+		// Start the streaming process
+		(async () => {
+			try {
+				// Write CSV headers
+				await writer.write(encoder.encode(headers.join(',') + '\n'));
 
-		// Process in batches
-		while (hasMore) {
-			const query = `
-				SELECT *
-				FROM users
-				ORDER BY created_at
-				LIMIT ? OFFSET ?;
-			`;
-			const results = await env.DB.prepare(query)
-				.bind(BATCH_SIZE, offset)
-				.all();
+				const BATCH_SIZE = 1000;
+				let offset = 0;
+				let hasMore = true;
 
-			if (results.results.length === 0) {
-				hasMore = false;
-			} else {
-				const csvRows = results.results.map(row =>
-					headers.map(header =>
-						JSON.stringify(row[header] ?? '')
-					).join(',')
-				).join('\n');
+				// Process in batches
+				while (hasMore) {
+					const query = `
+						SELECT *
+						FROM users
+						ORDER BY created_at
+						LIMIT ? OFFSET ?;
+					`;
+					const results = await env.DB.prepare(query)
+						.bind(BATCH_SIZE, offset)
+						.all();
 
-				await writer.write(encoder.encode(csvRows + '\n'));
-				offset += results.results.length;
+					if (results.results.length === 0) {
+						hasMore = false;
+					} else {
+						const csvRows = results.results.map(row =>
+							headers.map(header =>
+								JSON.stringify(row[header] ?? '')
+							).join(',')
+						).join('\n');
+
+						await writer.write(encoder.encode(csvRows + '\n'));
+						offset += results.results.length;
+					}
+				}
+
+				await writer.close();
+			} catch (error) {
+				await writer.abort(error);
 			}
-		}
+		})();
 
-		writer.close();
-
-		// Return as a streamable CSV file
+		// Return the readable stream immediately
 		return new Response(readable, {
 			headers: {
 				...corsHeaders,
