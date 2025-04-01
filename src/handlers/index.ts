@@ -88,3 +88,12 @@ export async function handleGetStats(request: Request, env: Env, corsHeaders: He
 		return createErrorResponse(`Failed to get stats: ${error instanceof Error ? error.message : 'Unknown error'}`, 500, corsHeaders);
 	}
 }
+
+export async function handleGetSecretCodes(request: Request, env: Env, corsHeaders: HeadersInit): Promise<Response> {
+	try {
+		return createResponse(SECRET_CODES, 200, corsHeaders);
+	} catch (error) {
+		console.error('Get secret codes error:', error);
+		return createErrorResponse(`Failed to get secret codes: ${error instanceof Error ? error.message : 'Unknown error'}`, 500, corsHeaders);
+	}
+}
