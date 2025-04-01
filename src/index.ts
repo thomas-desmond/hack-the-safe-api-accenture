@@ -26,18 +26,9 @@ export default {
 
 		const url = new URL(request.url);
 		const isAdminEndpoint = url.pathname.startsWith('/admin');
-		const isAdminStats = url.pathname === '/admin/stats';
 
 		if (isAdminEndpoint && !validateAdminApiKey(request, env)) {
 			return new Response('Unauthorized', { status: 401, headers: corsHeaders });
-		}
-
-		if (!isAdminStats && request.method !== 'POST') {
-			return new Response('Method Not Allowed', { status: 405 });
-		}
-
-		if (isAdminStats && request.method !== 'GET') {
-			return new Response('Method Not Allowed', { status: 405 });
 		}
 
 		switch (url.pathname) {
