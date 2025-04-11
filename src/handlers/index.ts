@@ -35,11 +35,13 @@ export async function handleCheckCode(request: Request, env: Env, corsHeaders: H
 
 export async function handleHintImage(request: Request, env: Env, corsHeaders: HeadersInit): Promise<Response> {
 	try {
-		const { image } = (await request.json()) as HintImageRequest;
+		// Get the raw binary data from the request body
+		const imageData = await request.arrayBuffer();
+		const imageArray = new Uint8Array(imageData);
 
 		const response = (await env.AI.run(
 			"@cf/llava-hf/llava-1.5-7b-hf",
-			{ image: Array.from(image), prompt: 'Describe what you see in the image' },
+			{ image: Array.from(imageArray), prompt: 'Describe what you see in the image' },
 			{
 				gateway: {
 					id: 'hack-the-safe',
