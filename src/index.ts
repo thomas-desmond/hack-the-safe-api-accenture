@@ -12,7 +12,16 @@
  */
 
 import type { Env } from './types';
-import { handleSubmit, handleCheckCode, handleAIChat, handleSelectWinner, handleGetStats, handleGetSecretCodes, handleExportDatabase } from './handlers';
+import {
+	handleSubmit,
+	handleCheckCode,
+	handleAIChat,
+	handleSelectWinner,
+	handleGetStats,
+	handleGetSecretCodes,
+	handleExportDatabase,
+	handleHintImage,
+} from './handlers';
 import { getCorsHeaders, handleOptionsRequest, validateAdminApiKey } from './utils/response';
 
 export default {
@@ -36,6 +45,8 @@ export default {
 				return handleSubmit(request, env, corsHeaders);
 			case '/check-code':
 				return handleCheckCode(request, env, corsHeaders);
+			case '/hint-image':
+				return handleHintImage(request, env, corsHeaders);
 			case '/admin/select-winner':
 				return handleSelectWinner(request, env, corsHeaders);
 			case '/admin/stats':

@@ -1,7 +1,8 @@
-import type { Env, UserInfo, CheckCodeRequest, AIChatRequest } from '../types';
+import type { Env, UserInfo, CheckCodeRequest, AIChatRequest, HintImageRequest } from '../types';
 import { DatabaseService } from '../services/db';
 import { createResponse, createErrorResponse } from '../utils/response';
 import { SECRET_CODES, AI_CONFIG, SYSTEM_MESSAGES } from '../constants';
+import { checkAiTextForHintKeywords } from '../utils/hintCheck';
 
 export async function handleSubmit(request: Request, env: Env, corsHeaders: HeadersInit): Promise<Response> {
 	try {
@@ -32,6 +33,36 @@ export async function handleCheckCode(request: Request, env: Env, corsHeaders: H
 	}
 }
 
+export async function handleHintImage(request: Request, env: Env, corsHeaders: HeadersInit): Promise<Response> {
+	try {
+		const { image } = (await request.json()) as HintImageRequest;
+
+		const response = (await env.AI.run(
+			"@cf/llava-hf/llava-1.5-7b-hf",
+			{ image: Array.from(image), prompt: 'Describe what you see in the image' },
+			{
+				gateway: {
+					id: 'hack-the-safe',
+					skipCache: false,
+					cacheTtl: 3360,
+				},
+			}
+		)) as AiImageToTextOutput;
+
+		const shouldGetHint = checkAiTextForHintKeywords(response.description);
+
+		if (shouldGetHint) {
+			return createResponse({ aiTextResult: response.description, hint: SECRET_CODES[3][0], hintPosition: "1st" }, 200, corsHeaders);
+		} else {
+			return createResponse({ aiTextResult: "Looks like your image does not include any of the items we're looking for. Please try again.", hint: null, hintPosition: null }, 200, corsHeaders);
+		}
+
+	} catch (error) {
+		console.error('Check code error:', error);
+		return createErrorResponse(`Failed to check code: ${error instanceof Error ? error.message : 'Unknown error'}`, 500, corsHeaders);
+	}
+}
+
 export async function handleAIChat(request: Request, env: Env, corsHeaders: HeadersInit): Promise<Response> {
 	try {
 		const { messages, level } = (await request.json()) as AIChatRequest;
@@ -51,7 +82,7 @@ export async function handleAIChat(request: Request, env: Env, corsHeaders: Head
 					id: 'hack-the-safe',
 					skipCache: false,
 					cacheTtl: 3360,
-				}
+				},
 			}
 		);
 
@@ -125,18 +156,12 @@ export async function handleExportDatabase(request: Request, env: Env, corsHeade
 						ORDER BY created_at
 						LIMIT ? OFFSET ?;
 					`;
-					const results = await env.DB.prepare(query)
-						.bind(BATCH_SIZE, offset)
-						.all();
+					const results = await env.DB.prepare(query).bind(BATCH_SIZE, offset).all();
 
 					if (results.results.length === 0) {
 						hasMore = false;
 					} else {
-						const csvRows = results.results.map(row =>
-							headers.map(header =>
-								JSON.stringify(row[header] ?? '')
-							).join(',')
-						).join('\n');
+						const csvRows = results.results.map((row) => headers.map((header) => JSON.stringify(row[header] ?? '')).join(',')).join('\n');
 
 						await writer.write(encoder.encode(csvRows + '\n'));
 						offset += results.results.length;
@@ -155,8 +180,8 @@ export async function handleExportDatabase(request: Request, env: Env, corsHeade
 				...corsHeaders,
 				'Content-Type': 'text/csv',
 				'Content-Disposition': 'attachment; filename="hack-the-safe-users.csv"',
-				'Transfer-Encoding': 'chunked'
-			}
+				'Transfer-Encoding': 'chunked',
+			},
 		});
 	} catch (error) {
 		console.error('Export database error:', error);

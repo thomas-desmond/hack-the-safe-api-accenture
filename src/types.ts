@@ -21,6 +21,10 @@ export interface CheckCodeRequest {
 	email: string;
 }
 
+export interface HintImageRequest {
+	image: Uint8Array;
+}
+
 export interface AIChatRequest {
 	messages: Message[];
 	level: number;
