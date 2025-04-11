@@ -54,7 +54,7 @@ export async function handleHintImage(request: Request, env: Env, corsHeaders: H
 		if (shouldGetHint) {
 			return createResponse({ aiTextResult: response.description, hint: SECRET_CODES[3][0], hintPosition: "1st" }, 200, corsHeaders);
 		} else {
-			return createResponse({ aiTextResult: "Looks like your image does not include any of the items we're looking for. Please try again.", hint: null, hintPosition: null }, 200, corsHeaders);
+			return createResponse({ aiTextResult: response.description, hint: null, hintPosition: null }, 200, corsHeaders);
 		}
 
 	} catch (error) {
