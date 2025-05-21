@@ -14,8 +14,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "hack-the-safe-interrupt-25",
-			"database_id": "e26cf745-535b-4bfc-bae6-51dd93508754"
+			"database_name": "meetups",
+			"database_id": "69961d6e-24fc-48a7-9755-db5125690b5c"
 		}
 	]
 }
