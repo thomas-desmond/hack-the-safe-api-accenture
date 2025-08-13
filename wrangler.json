@@ -14,8 +14,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "snowflake-25",
-			"database_id": "df753f70-1c1e-4d27-9523-e2466bf47d63"
+			"database_name": "accenture-hack-the-safe",
+			"database_id": "8e3e8481-a819-4792-9e14-f1088ec13265"
 		}
 	]
 }
