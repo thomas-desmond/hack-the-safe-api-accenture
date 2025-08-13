@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "hack-the-safe-api",
+	"name": "hack-the-safe-api-accenture",
 	"main": "src/index.ts",
 	"account_id": "4ada3fc2e7dcf09a09749af670622778",
 	"compatibility_date": "2025-01-21",
