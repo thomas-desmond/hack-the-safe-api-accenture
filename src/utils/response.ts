@@ -43,5 +43,5 @@ export function handleOptionsRequest(request: Request, corsHeaders: HeadersInit)
 
 export function validateAdminApiKey(request: Request, env: Env): boolean {
 	const apiKey = request.headers.get('x-api-key');
-	return apiKey === env.ADMIN_API_KEY;
+	return apiKey === env.ACCENTURE_ADMIN_API_KEY;
 }

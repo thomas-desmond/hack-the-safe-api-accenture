@@ -1,7 +1,7 @@
 export interface Env {
 	AI: Ai;
 	DB: D1Database;
-	ADMIN_API_KEY: string;
+	ACCENTURE_ADMIN_API_KEY: string;
 }
 
 export interface Message {
