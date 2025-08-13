@@ -37,7 +37,7 @@ export default {
 		const isAdminEndpoint = url.pathname.startsWith('/admin');
 
 		if (isAdminEndpoint && !validateAdminApiKey(request, env)) {
-			return new Response('Unauthorized', { status: 401, headers: corsHeaders });
+			return new Response('Unauthorized API Key', { status: 401, headers: corsHeaders });
 		}
 
 		switch (url.pathname) {
